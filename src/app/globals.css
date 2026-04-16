@@ -36,6 +36,6 @@ body {
 }
 
 /* Remove all border-radius globally — Bauhaus sharp corners */
-button, input, textarea, select {
+input, textarea, select {
   border-radius: 0 !important;
 }
