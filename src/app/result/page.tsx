@@ -48,6 +48,8 @@ export default function ResultPage() {
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [expandedTrait, setExpandedTrait] = useState<string | null>(null)
+  const [aiEvaluation, setAiEvaluation] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   useEffect(() => {
     async function processResults() {
@@ -79,6 +81,22 @@ export default function ResultPage() {
 
         setResults(data.results)
         setResultId(data.id)
+        // Trigger AI evaluation
+        setAiLoading(true)
+        fetch('/api/evaluate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            results: data.results,
+            firstName: userData?.firstName || null,
+          }),
+        })
+          .then(r => r.json())
+          .then(evalData => {
+            if (evalData.evaluation) setAiEvaluation(evalData.evaluation)
+          })
+          .catch(err => console.error('AI eval error:', err))
+          .finally(() => setAiLoading(false))
       } catch (err) {
         console.error('Error processing results:', err)
         setError('Something went wrong processing your results.')
@@ -234,6 +252,60 @@ export default function ResultPage() {
             </div>
           )}
 
+          {/* AI Evaluation */}
+          <div style={{ marginBottom: '64px' }}>
+            <p style={{ fontSize: '12px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
+              AI Interpretation
+            </p>
+            <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1A1A1A', marginBottom: '24px', fontFamily: 'Inter, sans-serif', lineHeight: 1.3 }}>
+              Your personalised behavioural profile
+            </h2>
+
+            {aiLoading && (
+              <div style={{ padding: '32px', backgroundColor: '#FFFFFF', border: '1px solid #F5F5F5' }}>
+                <p style={{ fontSize: '15px', color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontStyle: 'italic' }}>
+                  Generating your AI interpretation... This takes 10–15 seconds.
+                </p>
+              </div>
+            )}
+
+            {aiEvaluation && !aiLoading && (
+              <div style={{ padding: '32px', backgroundColor: '#FFFFFF', border: '1px solid #F5F5F5', borderTop: '3px solid #1A1A1A' }}>
+                {aiEvaluation.split('\n').filter(line => line.trim()).map((line, i) => {
+                  const isBold = line.startsWith('**') && line.endsWith('**')
+                  const isItalic = line.startsWith('*') && line.endsWith('*')
+                  if (isBold) {
+                    return (
+                      <p key={i} style={{ fontSize: '16px', fontWeight: 700, color: '#1A1A1A', fontFamily: 'Inter, sans-serif', marginBottom: '8px', marginTop: i === 0 ? 0 : '24px' }}>
+                        {line.replace(/\*\*/g, '')}
+                      </p>
+                    )
+                  }
+                  if (isItalic) {
+                    return (
+                      <p key={i} style={{ fontSize: '13px', color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontStyle: 'italic', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #F5F5F5' }}>
+                        {line.replace(/\*/g, '')}
+                      </p>
+                    )
+                  }
+                  return (
+                    <p key={i} style={{ fontSize: '15px', color: '#2D2D2D', fontFamily: 'Inter, sans-serif', lineHeight: 1.7, marginBottom: '12px' }}>
+                      {line}
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+
+            {!aiLoading && !aiEvaluation && (
+              <div style={{ padding: '24px', backgroundColor: '#F5F5F5', border: '1px solid #F5F5F5' }}>
+                <p style={{ fontSize: '14px', color: '#6B6B6B', fontFamily: 'Inter, sans-serif' }}>
+                  AI interpretation could not be generated. Your scores are still accurate and complete.
+                </p>
+              </div>
+            )}
+          </div>
+          
           {/* Divider */}
           <div style={{ borderTop: '1px solid #F5F5F5', marginBottom: '64px' }} />
 
