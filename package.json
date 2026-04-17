@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@alheimsins/bigfive-calculate-score": "^3.0.3",
     "@anthropic-ai/sdk": "^0.88.0",
     "@bigfive-org/questions": "^1.2.1",
     "@bigfive-org/results": "^1.2.5",
