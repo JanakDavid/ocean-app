@@ -1,5 +1,5 @@
 /* OCEAN v2 — Neo-Bauhaus 2026 "Instrument" */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Fonts are loaded via next/font/google in layout.tsx — no @import needed */
 
 :root {
   /* Paper & ink */
@@ -27,9 +27,9 @@
   --trait-N: var(--plum);
 
   /* Type */
-  --sans: 'Inter', -apple-system, system-ui, sans-serif;
-  --serif: 'Instrument Serif', 'GT Sectra', 'Times New Roman', serif;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: var(--font-sans), system-ui, sans-serif;
+  --serif: var(--font-serif), 'Times New Roman', serif;
+  --mono: var(--font-mono), ui-monospace, monospace;
 
   /* Scale (8pt) */
   --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;

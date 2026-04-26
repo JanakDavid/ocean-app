@@ -37,6 +37,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to save result' }, { status: 500 })
     }
 
+    // Fire-and-forget email — never blocks the response.
+    // Guard against aborted requests (React StrictMode double-invoke) to ensure
+    // only the real submission triggers an email with the confirmed data.id.
+    if (userData?.email && !request.signal.aborted) {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      fetch(`${baseUrl}/api/email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userData.email,
+          firstName: userData.firstName || null,
+          resultId: data.id,
+        }),
+      }).catch(err => console.error('Email dispatch error:', err))
+    }
+
     return NextResponse.json({ id: data.id, results: resultTexts })
   } catch (err) {
     console.error('Submit error:', err)

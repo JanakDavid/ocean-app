@@ -49,13 +49,42 @@ export default function TestIntroPage() {
                 placeholder={f.ph}
                 value={formData[f.key]}
                 onChange={e => setFormData({ ...formData, [f.key]: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '12px 0',
+                  border: 'none',
+                  borderBottom: '1px solid var(--ink)',
+                  background: 'transparent',
+                  fontFamily: 'var(--serif)',
+                  fontSize: '22px',
+                  color: 'var(--ink)',
+                  outline: 'none',
+                  borderRadius: 0,
+                }}
               />
             </div>
           ))}
         </div>
 
         <div style={{ marginTop: 72, display: 'flex', alignItems: 'center', gap: 24 }}>
-          <button className="btn" onClick={handleStart}>
+          <button
+            className="btn"
+            onClick={handleStart}
+            style={{
+              background: 'var(--ink)',
+              color: 'var(--bone)',
+              border: 'none',
+              borderRadius: 0,
+              padding: '20px 32px',
+              fontSize: 15,
+              fontWeight: 500,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 12,
+              minHeight: 56,
+            }}
+          >
             Begin · 120 items <span className="arrow" />
           </button>
           <button onClick={handleStart} style={{

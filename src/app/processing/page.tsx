@@ -130,10 +130,13 @@ export default function ProcessingPage() {
     const answers = JSON.parse(answersRaw)
     const userData = userDataRaw ? JSON.parse(userDataRaw) : {}
 
+    const controller = new AbortController()
+
     fetch('/api/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ answers, userData }),
+      signal: controller.signal,
     })
       .then(r => r.json())
       .then(data => {
@@ -145,11 +148,17 @@ export default function ProcessingPage() {
           }))
         }
       })
-      .catch(err => console.error('Submit error:', err))
-      .finally(() => {
-        apiDone.current = true
-        maybeNavigate()
+      .catch(err => {
+        if (err.name !== 'AbortError') console.error('Submit error:', err)
       })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          apiDone.current = true
+          maybeNavigate()
+        }
+      })
+
+    return () => controller.abort()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
