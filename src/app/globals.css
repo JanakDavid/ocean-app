@@ -1,39 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+@import './design-tokens.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --black: #1A1A1A;
-  --dark-gray: #2D2D2D;
-  --mid-gray: #6B6B6B;
-  --light-gray: #F5F5F5;
-  --warm-white: #FAFAF8;
-  --white: #FFFFFF;
-  --blue: #1D4ED8;
-  --green: #15803D;
-  --orange: #EA580C;
-  --yellow: #CA8A04;
-  --red: #B91C1C;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
-}
-
-body {
-  background-color: #FAFAF8;
-  color: #1A1A1A;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
 
 /* Remove all border-radius globally — Bauhaus sharp corners */
 input, textarea, select {

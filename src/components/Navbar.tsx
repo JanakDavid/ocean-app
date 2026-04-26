@@ -1,73 +1,60 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+function Logomark({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      <circle cx="6"  cy="6"  r="4" fill="var(--ultra)" />
+      <circle cx="18" cy="6"  r="4" fill="var(--moss)"  />
+      <circle cx="12" cy="12" r="4" fill="var(--clay)"  />
+      <circle cx="6"  cy="18" r="4" fill="var(--solar)" />
+      <circle cx="18" cy="18" r="4" fill="var(--plum)"  />
+    </svg>
+  )
+}
+
+const links = [
+  { href: '/',        label: 'Overview',      match: (p: string) => p === '/' },
+  { href: '/test',    label: 'Take the test', match: (p: string) => p.startsWith('/test') },
+  { href: '/results', label: 'View Result',   match: (p: string) => p.startsWith('/result') },
+]
 
 export default function Navbar() {
-  return (
-    <nav
-      style={{
-        backgroundColor: '#FAFAF8',
-        borderBottom: '1px solid #F5F5F5',
-        height: '64px',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '720px',
-          margin: '0 auto',
-          padding: '0 24px',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        {/* Logo */}
-        <Link
-          href="/"
-          style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '20px',
-            fontWeight: '700',
-            color: '#1A1A1A',
-            textDecoration: 'none',
-            letterSpacing: '0.08em',
-          }}
-        >
-          OCEAN
-        </Link>
+  const pathname = usePathname()
 
-        {/* Nav Links */}
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-          <Link
-            href="/test"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '16px',
-              fontWeight: '500',
-              color: '#1A1A1A',
+  return (
+    <nav style={{
+      position: 'sticky', top: 0, zIndex: 40,
+      background: 'var(--bone)',
+      padding: '0 clamp(24px, 4vw, 48px)',
+      height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      borderBottom: '1px solid var(--hairline)',
+    }}>
+      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+        <Logomark size={18} />
+        <span style={{ fontFamily: 'var(--sans)', fontWeight: 500, fontSize: 14, color: 'var(--ink)' }}>
+          OCEAN
+        </span>
+      </Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        {links.map(l => {
+          const active = l.match(pathname)
+          return (
+            <Link key={l.href} href={l.href} style={{
+              fontFamily: 'var(--sans)', fontSize: 13,
+              color: active ? 'var(--ink)' : 'var(--ink-3)',
+              fontWeight: active ? 500 : 400,
               textDecoration: 'none',
-            }}
-          >
-            Take the Test
-          </Link>
-          <Link
-            href="/results"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '16px',
-              fontWeight: '400',
-              color: '#6B6B6B',
-              textDecoration: 'none',
-            }}
-          >
-            View Results
-          </Link>
-        </div>
+            }}>
+              {l.label}
+            </Link>
+          )
+        })}
       </div>
     </nav>
   )
 }
+
+export { Logomark }

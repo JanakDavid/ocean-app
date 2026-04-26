@@ -1,258 +1,104 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
-import Link from 'next/link'
+import Footer from '@/components/Footer'
+
+const dimensions = [
+  { k: 'O', name: 'Openness',          gloss: 'Imagination, curiosity, breadth of interest.' },
+  { k: 'C', name: 'Conscientiousness', gloss: 'Orderliness, diligence, self-discipline.' },
+  { k: 'E', name: 'Extraversion',      gloss: 'Warmth, assertiveness, appetite for stimulus.' },
+  { k: 'A', name: 'Agreeableness',     gloss: 'Trust, altruism, cooperative tendency.' },
+  { k: 'N', name: 'Neuroticism',       gloss: 'Emotional reactivity, recovery from stress.' },
+]
 
 export default function HomePage() {
+  const router = useRouter()
+
   return (
-    <>
+    <div className="screen">
       <Navbar />
 
-      <main
-        style={{
-          backgroundColor: '#FAFAF8',
-          minHeight: '100vh',
-        }}
-      >
-        {/* Hero Section */}
-        <section
-          style={{
-            maxWidth: '720px',
-            margin: '0 auto',
-            padding: '96px 24px',
-            textAlign: 'center',
-          }}
-        >
-          {/* Label */}
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '12px',
-              fontWeight: '500',
-              color: '#6B6B6B',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              marginBottom: '24px',
-            }}
-          >
-            Scientific · Free · Private
-          </p>
+      {/* Hero */}
+      <section style={{
+        padding: 'clamp(80px, 14vh, 160px) clamp(24px, 6vw, 96px) clamp(64px, 10vh, 128px)',
+        maxWidth: 1200, margin: '0 auto',
+      }}>
+        <p className="eyebrow" style={{ marginBottom: 40 }}>
+          <span style={{
+            display: 'inline-block', width: 8, height: 8,
+            background: 'var(--clay)', borderRadius: '50%',
+            marginRight: 10, verticalAlign: 'middle',
+          }} />
+          A behavioural instrument · 2026
+        </p>
 
-          {/* Headline */}
-          <h1
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 'clamp(36px, 6vw, 56px)',
-              fontWeight: '700',
-              color: '#1A1A1A',
-              lineHeight: '1.15',
-              letterSpacing: '-0.02em',
-              marginBottom: '24px',
-            }}
-          >
-            Understand who you are.
-          </h1>
+        <h1 className="display" style={{ maxWidth: 1000 }}>
+          Know the <span style={{ fontStyle: 'italic', color: 'var(--clay)' }}>architecture</span><br />
+          of a person.
+        </h1>
 
-          {/* Subheadline */}
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '18px',
-              fontWeight: '400',
-              color: '#6B6B6B',
-              lineHeight: '1.6',
-              maxWidth: '520px',
-              margin: '0 auto 16px',
-            }}
-          >
-            The OCEAN test is the most scientifically validated personality
-            assessment in psychology. 120 questions. No registration. Your results
-            are yours.
-          </p>
+        <p className="body-lg" style={{ marginTop: 40, maxWidth: 560 }}>
+          Five dimensions. 120 items. Ten minutes. No account.
+          A legible, scientifically grounded portrait of who you are.
+        </p>
 
-          {/* Time estimate */}
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
-              fontWeight: '400',
-              color: '#6B6B6B',
-              marginBottom: '48px',
-            }}
-          >
-            Estimated time: 10–12 minutes
-          </p>
-
-          {/* CTA Button */}
-          <Link
-            href="/test"
-            style={{
-              display: 'inline-block',
-              backgroundColor: '#1A1A1A',
-              color: '#FFFFFF',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '16px',
-              fontWeight: '500',
-              padding: '16px 48px',
-              textDecoration: 'none',
-              letterSpacing: '0.01em',
-              transition: 'background-color 150ms ease',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#EA580C'
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#1A1A1A'
-            }}
-          >
-            Take the free test
-          </Link>
-
-          <p
-            style={{
-              marginTop: '16px',
-              fontSize: '13px',
-              color: '#6B6B6B',
-            }}
-          >
-            No registration required
-          </p>
-        </section>
-
-        {/* Divider */}
-        <div
-          style={{
-            maxWidth: '720px',
-            margin: '0 auto',
-            padding: '0 24px',
-          }}
-        >
-          <div style={{ borderTop: '1px solid #F5F5F5' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 64 }}>
+          <button className="btn" onClick={() => router.push('/test')}>
+            Begin <span className="arrow" />
+          </button>
+          <button onClick={() => router.push('/results')} style={{
+            background: 'none', border: 0, cursor: 'pointer', padding: 0,
+            fontSize: 14, color: 'var(--ink-2)',
+            textDecoration: 'underline', textUnderlineOffset: 4, textDecorationColor: 'var(--ink-4)',
+          }}>
+            Retrieve existing result
+          </button>
         </div>
+      </section>
 
-        {/* Value Props Section */}
-        <section
-          style={{
-            maxWidth: '720px',
-            margin: '0 auto',
-            padding: '96px 24px',
-          }}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '48px',
-            }}
-          >
-            {/* Scientific */}
-            <div>
-              <p
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: '#1D4ED8',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                }}
-              >
-                Scientific
-              </p>
-              <h3
-                style={{
-                  fontSize: '20px',
-                  fontWeight: '600',
-                  color: '#1A1A1A',
-                  marginBottom: '8px',
-                  lineHeight: '1.3',
-                }}
-              >
-                Peer-reviewed methodology
-              </h3>
-              <p style={{ fontSize: '15px', color: '#6B6B6B', lineHeight: '1.6' }}>
-                Based on the IPIP-NEO-PI — the gold standard in personality
-                research, used by psychologists worldwide.
-              </p>
+      {/* Five dimensions */}
+      <section style={{ padding: '0 clamp(24px, 6vw, 96px) clamp(80px, 12vh, 160px)', maxWidth: 1200, margin: '0 auto' }}>
+        <p className="eyebrow" style={{ marginBottom: 48 }}>The five dimensions</p>
+
+        <div>
+          {dimensions.map((t, i, arr) => (
+            <div key={t.k} style={{
+              display: 'grid', gridTemplateColumns: '80px 1fr 2fr', gap: 32, alignItems: 'baseline',
+              padding: '28px 0',
+              borderBottom: i < arr.length - 1 ? '1px solid var(--hairline)' : 0,
+              borderTop: i === 0 ? '1px solid var(--hairline)' : 0,
+            }}>
+              <span style={{
+                fontFamily: 'var(--serif)', fontSize: 48, fontWeight: 700, lineHeight: 1,
+                color: `var(--trait-${t.k})`, letterSpacing: '-0.02em',
+              }}>
+                {t.k}
+              </span>
+              <span className="h3" style={{ fontWeight: 500 }}>{t.name}</span>
+              <span className="body" style={{ color: 'var(--ink-2)', fontSize: 15 }}>{t.gloss}</span>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Free */}
-            <div>
-              <p
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: '#15803D',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                }}
-              >
-                Free
-              </p>
-              <h3
-                style={{
-                  fontSize: '20px',
-                  fontWeight: '600',
-                  color: '#1A1A1A',
-                  marginBottom: '8px',
-                  lineHeight: '1.3',
-                }}
-              >
-                Always free, no catch
-              </h3>
-              <p style={{ fontSize: '15px', color: '#6B6B6B', lineHeight: '1.6' }}>
-                No subscription, no premium tier. The full assessment and your
-                complete results at no cost.
-              </p>
-            </div>
+      {/* Closing note */}
+      <section style={{
+        padding: 'clamp(64px, 10vh, 128px) clamp(24px, 6vw, 96px)',
+        maxWidth: 1200, margin: '0 auto', textAlign: 'center',
+      }}>
+        <p style={{
+          fontFamily: 'var(--serif)', fontSize: 'clamp(28px, 3.5vw, 44px)',
+          lineHeight: 1.25, letterSpacing: '-0.01em', maxWidth: 760, margin: '0 auto', color: 'var(--ink)',
+        }}>
+          Built on the IPIP-NEO-PI — open science, open instrument, entirely free.
+        </p>
+        <button className="btn" style={{ marginTop: 48 }} onClick={() => router.push('/test')}>
+          Begin the test <span className="arrow" />
+        </button>
+      </section>
 
-            {/* Private */}
-            <div>
-              <p
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: '#EA580C',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                }}
-              >
-                Private
-              </p>
-              <h3
-                style={{
-                  fontSize: '20px',
-                  fontWeight: '600',
-                  color: '#1A1A1A',
-                  marginBottom: '8px',
-                  lineHeight: '1.3',
-                }}
-              >
-                No registration needed
-              </h3>
-              <p style={{ fontSize: '15px', color: '#6B6B6B', lineHeight: '1.6' }}>
-                Name and email are optional. Your result is stored by a unique
-                ID only — no account, no tracking.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer
-          style={{
-            borderTop: '1px solid #F5F5F5',
-            padding: '32px 24px',
-            textAlign: 'center',
-          }}
-        >
-          <p style={{ fontSize: '14px', color: '#6B6B6B' }}>
-            © {new Date().getFullYear()} OCEAN Platform · Built on open science
-          </p>
-        </footer>
-      </main>
-    </>
+      <Footer />
+    </div>
   )
 }
