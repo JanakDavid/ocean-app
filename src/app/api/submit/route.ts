@@ -1,15 +1,38 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const SubmitSchema = z.object({
+  answers: z
+    .array(z.number().int().min(1).max(5))
+    .max(120),
+  userData: z
+    .object({
+      firstName:  z.string().max(100).nullable().optional(),
+      department: z.string().max(100).nullable().optional(),
+      email:      z.string().email().nullable().optional(),
+    })
+    .optional(),
+})
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { answers, userData } = body
+
+    const parsed = SubmitSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: parsed.error.flatten().fieldErrors },
+        { status: 400 },
+      )
+    }
+
+    const { answers, userData } = parsed.data
 
     // Run scoring on the server
     // eslint-disable-next-line @typescript-eslint/no-require-imports

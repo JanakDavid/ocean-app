@@ -4,6 +4,7 @@ import { useEffect, useState, type ComponentProps } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRouter } from 'next/navigation'
+import DOMPurify from 'isomorphic-dompurify'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
@@ -209,7 +210,7 @@ export default function ResultPage() {
                 {/* Description */}
                 <p
                   style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.55, marginBottom: 16, maxWidth: 760 }}
-                  dangerouslySetInnerHTML={{ __html: cleanDesc(trait.description || trait.shortDescription || '') }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanDesc(trait.description || trait.shortDescription || '')) }}
                 />
 
                 {/* Toggle */}
@@ -363,7 +364,7 @@ export default function ResultPage() {
               ),
             }}
           >
-            {aiEvaluation}
+            {DOMPurify.sanitize(aiEvaluation)}
           </ReactMarkdown>
         )}
 
