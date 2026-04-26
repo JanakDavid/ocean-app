@@ -19,7 +19,7 @@ export default function TestIntroPage() {
 
   const fields = [
     { key: 'firstName' as const,  label: 'First name', ph: 'Martina' },
-    { key: 'department' as const, label: 'Context',    ph: 'Research lab' },
+    { key: 'department' as const, label: 'Department',  ph: 'Research lab' },
     { key: 'email' as const,      label: 'Email',      ph: 'martina@lab.de' },
   ]
 
