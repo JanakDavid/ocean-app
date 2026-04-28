@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     // Guard against aborted requests (React StrictMode double-invoke) to ensure
     // only the real submission triggers an email with the confirmed data.id.
     if (userData?.email && !request.signal.aborted) {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${process.env.VERCEL_URL}` || 'http://localhost:3000'
       fetch(`${baseUrl}/api/email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
