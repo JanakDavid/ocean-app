@@ -8,7 +8,13 @@ const supabase = createClient(
 )
 
 const SubmitSchema = z.object({
-  answers: z.record(z.string(), z.number().int().min(1).max(5)),
+  answers: z.array(
+    z.object({
+      domain: z.string(),
+      facet:  z.number().int(),
+      score:  z.number().int().min(1).max(5),
+    })
+  ),
   userData: z
     .object({
       firstName:  z.string().max(100).nullable().optional(),
