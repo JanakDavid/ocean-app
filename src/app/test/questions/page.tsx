@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
+import { questionHints } from '@/lib/questionHints'
 
 interface Choice {
   text: string
@@ -173,6 +174,17 @@ export default function QuestionsPage() {
             }}>
               &ldquo;I {question.text.charAt(0).toLowerCase() + question.text.slice(1)}&rdquo;
             </p>
+            {questionHints[question.text] && (
+              <p style={{
+                fontSize: 13,
+                color: 'var(--ink-3)',
+                fontStyle: 'italic',
+                marginTop: 16,
+                letterSpacing: '0.01em',
+              }}>
+                {questionHints[question.text]}
+              </p>
+            )}
           </div>
         </div>
 
