@@ -22,7 +22,7 @@ const SubmitSchema = z.object({
     .object({
       firstName:  z.string().max(100).nullable().optional(),
       department: z.string().max(100).nullable().optional(),
-      email:      z.string().email().nullable().optional(),
+      email:      z.union([z.string().email(), z.literal("")]).nullable().optional(),
     })
     .optional(),
 })
@@ -30,9 +30,11 @@ const SubmitSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    console.log('Request body received:', JSON.stringify(body).slice(0, 500))
 
     const parsed = SubmitSchema.safeParse(body)
     if (!parsed.success) {
+      console.error('Zod validation error:', JSON.stringify(parsed.error.flatten(), null, 2))
       return NextResponse.json(
         { error: 'Invalid request', details: parsed.error.flatten().fieldErrors },
         { status: 400 },
