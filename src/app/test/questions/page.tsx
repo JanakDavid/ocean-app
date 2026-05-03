@@ -270,7 +270,7 @@ export default function QuestionsPage() {
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 0' }}>
           <div key={question.id} className="fade-in" style={{ textAlign: 'center', maxWidth: 820 }}>
             <p className="eyebrow" style={{ marginBottom: 32, color: 'var(--ink-4)' }}>{t.test.consider}</p>
-            <p style={{
+            <p className="question-text" style={{
               fontFamily: 'var(--serif)', fontSize: 'clamp(36px, 5vw, 64px)',
               lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--ink)',
             }}>
@@ -306,11 +306,11 @@ export default function QuestionsPage() {
 
         {/* Likert — five bordered cells */}
         <div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
+          <div className="likert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
             {question.choices.map((choice, ci) => {
               const active = answers[question.id]?.score === choice.score
               return (
-                <button key={choice.score} onClick={() => pick(choice.score)} style={{
+                <button key={choice.score} onClick={() => pick(choice.score)} className="likert-btn" style={{
                   padding: '20px 8px',
                   border: '1px solid ' + (active ? 'var(--ink)' : 'var(--hairline)'),
                   background: active ? 'var(--ink)' : 'transparent',
