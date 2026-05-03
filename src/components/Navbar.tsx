@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import LanguageSwitch from './LanguageSwitch'
+import { useTranslation } from '@/lib/useTranslation'
 
 function Logomark({ size = 18 }: { size?: number }) {
   return (
@@ -15,14 +17,15 @@ function Logomark({ size = 18 }: { size?: number }) {
   )
 }
 
-const links = [
-  { href: '/',        label: 'Overview',      match: (p: string) => p === '/' },
-  { href: '/test',    label: 'Take the test', match: (p: string) => p.startsWith('/test') },
-  { href: '/results', label: 'View Result',   match: (p: string) => p.startsWith('/result') },
+const NAV_ITEMS = [
+  { href: '/',        key: 'overview'   as const, match: (p: string) => p === '/' },
+  { href: '/test',    key: 'takeTest'   as const, match: (p: string) => p.startsWith('/test') },
+  { href: '/results', key: 'viewResult' as const, match: (p: string) => p.startsWith('/result') },
 ]
 
 export default function Navbar() {
   const pathname = usePathname()
+  const t = useTranslation()
 
   return (
     <nav style={{
@@ -35,23 +38,24 @@ export default function Navbar() {
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
         <Logomark size={18} />
         <span style={{ fontFamily: 'var(--sans)', fontWeight: 500, fontSize: 14, color: 'var(--ink)' }}>
-          OCEAN
+          {t.nav.brand}
         </span>
       </Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-        {links.map(l => {
-          const active = l.match(pathname)
+        {NAV_ITEMS.map(item => {
+          const active = item.match(pathname)
           return (
-            <Link key={l.href} href={l.href} style={{
+            <Link key={item.href} href={item.href} style={{
               fontFamily: 'var(--sans)', fontSize: 13,
               color: active ? 'var(--ink)' : 'var(--ink-3)',
               fontWeight: active ? 500 : 400,
               textDecoration: 'none',
             }}>
-              {l.label}
+              {t.nav[item.key]}
             </Link>
           )
         })}
+        <LanguageSwitch />
       </div>
     </nav>
   )

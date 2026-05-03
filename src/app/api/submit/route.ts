@@ -25,6 +25,7 @@ const SubmitSchema = z.object({
       email:      z.union([z.string().email(), z.literal("")]).nullable().optional(),
     })
     .optional(),
+  lang: z.enum(['en', 'cs']).optional().default('en'),
 })
 
 export async function POST(request: NextRequest) {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { answers, userData } = parsed.data
+    const { answers, userData, lang } = parsed.data
 
     // Run scoring on the server
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -172,7 +173,7 @@ export async function POST(request: NextRequest) {
       }).catch(err => console.error('Email dispatch error:', err))
     }
 
-    return NextResponse.json({ id: data.id, results: resultTexts })
+    return NextResponse.json({ id: data.id, results: resultTexts, lang })
   } catch (err) {
     console.error('Submit error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

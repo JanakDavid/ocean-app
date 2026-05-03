@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function TestIntroPage() {
   const router = useRouter()
+  const t = useTranslation()
   const [formData, setFormData] = useState({
     firstName: '',
     department: '',
@@ -18,9 +20,9 @@ export default function TestIntroPage() {
   }
 
   const fields = [
-    { key: 'firstName' as const,  label: 'First name', ph: 'Martina' },
-    { key: 'department' as const, label: 'Department',  ph: 'Research lab' },
-    { key: 'email' as const,      label: 'Email',      ph: 'martina@lab.de' },
+    { key: 'firstName'  as const, label: t.form.fields.firstName.label,  placeholder: t.form.fields.firstName.placeholder },
+    { key: 'department' as const, label: t.form.fields.department.label, placeholder: t.form.fields.department.placeholder },
+    { key: 'email'      as const, label: t.form.fields.email.label,      placeholder: t.form.fields.email.placeholder },
   ]
 
   return (
@@ -32,12 +34,13 @@ export default function TestIntroPage() {
         padding: 'clamp(64px, 10vh, 128px) clamp(24px, 6vw, 96px)',
         maxWidth: 720, margin: '0 auto',
       }}>
-        <p className="eyebrow" style={{ marginBottom: 24 }}>Before you begin</p>
+        <p className="eyebrow" style={{ marginBottom: 24 }}>{t.form.eyebrow}</p>
         <h1 className="h1" style={{ marginBottom: 24 }}>
-          Identify yourself — <span style={{ fontStyle: 'italic', color: 'var(--ink-3)' }}>or don&apos;t.</span>
+          {t.form.h1.pre}{' '}
+          <span style={{ fontStyle: 'italic', color: 'var(--ink-3)' }}>{t.form.h1.italic}</span>
         </h1>
         <p className="body-lg" style={{ marginBottom: 64, maxWidth: 520 }}>
-          All fields are optional. Leave them blank and your result lives under an anonymous ID.
+          {t.form.body}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
@@ -46,7 +49,7 @@ export default function TestIntroPage() {
               <label className="label">{f.label}</label>
               <input
                 type={f.key === 'email' ? 'email' : 'text'}
-                placeholder={f.ph}
+                placeholder={f.placeholder}
                 value={formData[f.key]}
                 onChange={e => setFormData({ ...formData, [f.key]: e.target.value })}
                 style={{
@@ -85,14 +88,14 @@ export default function TestIntroPage() {
               minHeight: 56,
             }}
           >
-            Begin · 120 items <span className="arrow" />
+            {t.form.beginBtn} <span className="arrow" />
           </button>
           <button onClick={handleStart} style={{
             background: 'none', border: 0, cursor: 'pointer', padding: 0,
             fontSize: 13, color: 'var(--ink-3)',
             textDecoration: 'underline', textUnderlineOffset: 4,
           }}>
-            Skip — stay anonymous
+            {t.form.skipBtn}
           </button>
         </div>
       </div>

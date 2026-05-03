@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { questionHints } from '@/lib/questionHints'
+import { questionHintsCz } from '@/lib/questionHintsCz'
+import { useTranslation } from '@/lib/useTranslation'
+import { useLanguage } from '@/lib/LanguageContext'
+import czechQuestionsData from '@/lib/czechQuestions.json'
 
 interface Choice {
   text: string
@@ -28,22 +32,19 @@ interface Answer {
   score: number
 }
 
-const LIKERT = [
-  { long: 'Strongly disagree' },
-  { long: 'Disagree' },
-  { long: 'Neutral' },
-  { long: 'Agree' },
-  { long: 'Strongly agree' },
-]
+const czechMap: Record<string, string> = Object.fromEntries(
+  czechQuestionsData.map(q => [q.id, q.czech])
+)
 
 export default function QuestionsPage() {
   const router = useRouter()
+  const t = useTranslation()
+  const { lang } = useLanguage()
   const [questions, setQuestions] = useState<Question[]>([])
   const [answers, setAnswers] = useState<Record<string, Answer>>({})
   const [currentPage, setCurrentPage] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  // Load questions from the bigfive-org package
   useEffect(() => {
     async function loadQuestions() {
       try {
@@ -126,7 +127,7 @@ export default function QuestionsPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <p style={{ fontFamily: 'var(--serif)', fontSize: 28, color: 'var(--ink-3)', fontStyle: 'italic' }}>
-            Loading…
+            {t.test.loading}
           </p>
         </main>
       </>
@@ -134,6 +135,8 @@ export default function QuestionsPage() {
   }
 
   if (!question) return null
+
+  const czechText = lang === 'cs' ? (czechMap[question.id] ?? null) : null
 
   return (
     <div className="screen">
@@ -167,14 +170,28 @@ export default function QuestionsPage() {
         {/* Question — centered, fills available space */}
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 0' }}>
           <div key={question.id} className="fade-in" style={{ textAlign: 'center', maxWidth: 820 }}>
-            <p className="eyebrow" style={{ marginBottom: 32, color: 'var(--ink-4)' }}>Consider</p>
+            <p className="eyebrow" style={{ marginBottom: 32, color: 'var(--ink-4)' }}>{t.test.consider}</p>
             <p style={{
               fontFamily: 'var(--serif)', fontSize: 'clamp(36px, 5vw, 64px)',
               lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--ink)',
             }}>
-              &ldquo;I {question.text.charAt(0).toLowerCase() + question.text.slice(1)}&rdquo;
+              {czechText
+                ? <>&ldquo;{czechText}&rdquo;</>
+                : <>&ldquo;I {question.text.charAt(0).toLowerCase() + question.text.slice(1)}&rdquo;</>
+              }
             </p>
-            {questionHints[question.text] && (
+            {lang === 'cs' && czechText && questionHintsCz[czechText] && (
+              <p style={{
+                fontSize: 13,
+                color: 'var(--ink-3)',
+                fontStyle: 'italic',
+                marginTop: 16,
+                letterSpacing: '0.01em',
+              }}>
+                {questionHintsCz[czechText]}
+              </p>
+            )}
+            {lang === 'en' && questionHints[question.text] && (
               <p style={{
                 fontSize: 13,
                 color: 'var(--ink-3)',
@@ -207,14 +224,14 @@ export default function QuestionsPage() {
                   onMouseEnter={e => { if (!active) e.currentTarget.style.borderColor = 'var(--ink)' }}
                   onMouseLeave={e => { if (!active) e.currentTarget.style.borderColor = 'var(--hairline)' }}
                 >
-                  {LIKERT[ci]?.long ?? choice.text}
+                  {t.test.likert[ci] ?? choice.text}
                 </button>
               )
             })}
           </div>
 
           <p style={{ marginTop: 16, textAlign: 'center', color: 'var(--ink-4)', fontSize: 12 }}>
-            Press 1 – 5, or click
+            {t.test.pressHint}
           </p>
 
           {/* Navigation — Back left, Next / Submit right */}
@@ -233,7 +250,7 @@ export default function QuestionsPage() {
               }}
             >
               <span className="arrow" style={{ transform: 'rotate(180deg)', marginRight: 8, display: 'inline-block' }} />
-              Back
+              {t.test.backBtn}
             </button>
 
             {isLast ? (
@@ -247,7 +264,7 @@ export default function QuestionsPage() {
                   cursor: hasAnswer ? 'pointer' : 'not-allowed',
                 }}
               >
-                Submit <span className="arrow" />
+                {t.test.submitBtn} <span className="arrow" />
               </button>
             ) : (
               <button
@@ -260,7 +277,7 @@ export default function QuestionsPage() {
                   cursor: hasAnswer ? 'pointer' : 'not-allowed',
                 }}
               >
-                Next <span className="arrow" />
+                {t.test.nextBtn} <span className="arrow" />
               </button>
             )}
           </div>

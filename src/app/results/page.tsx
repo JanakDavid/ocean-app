@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import Navbar from '@/components/Navbar'
+import { useTranslation } from '@/lib/useTranslation'
+import { useLanguage } from '@/lib/LanguageContext'
+import { translations } from '@/lib/translations'
 
 interface FacetResult {
   facet: number
@@ -28,15 +31,9 @@ const TRAIT_COLORS: Record<string, string> = {
   N: '#B91C1C',
 }
 
-const TRAIT_LABELS: Record<string, string> = {
-  O: 'Openness',
-  C: 'Conscientiousness',
-  E: 'Extraversion',
-  A: 'Agreeableness',
-  N: 'Neuroticism',
-}
-
 export default function ResultsPage() {
+  const t = useTranslation()
+  const { lang } = useLanguage()
   const [inputId, setInputId] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -57,7 +54,7 @@ export default function ResultsPage() {
       const data = await response.json()
 
       if (data.error) {
-        setError('Result not found. Please check your ID and try again.')
+        setError(t.results.notFoundError)
         return
       }
 
@@ -69,7 +66,7 @@ export default function ResultsPage() {
         createdAt: data.createdAt,
       })
     } catch {
-      setError('Something went wrong. Please try again.')
+      setError(t.results.genericError)
     } finally {
       setLoading(false)
     }
@@ -87,20 +84,20 @@ export default function ResultsPage() {
 
           {/* Header */}
           <p style={{ fontSize: '12px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
-            View Results
+            {t.results.viewResultsEyebrow}
           </p>
           <h1 style={{ fontSize: '40px', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.2, letterSpacing: '-0.02em', marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
-            Retrieve your results
+            {t.results.h1}
           </h1>
           <p style={{ fontSize: '16px', color: '#6B6B6B', lineHeight: 1.6, marginBottom: '48px', fontFamily: 'Inter, sans-serif' }}>
-            Enter the unique ID you received after completing the test.
+            {t.results.body}
           </p>
 
           {/* Search Input */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '48px', flexWrap: 'wrap' }}>
             <input
               type="text"
-              placeholder="e.g. 3dd4ca19-647a-40dd-8910-4efc73879225"
+              placeholder={t.results.idPlaceholder}
               value={inputId}
               onChange={e => setInputId(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -135,7 +132,7 @@ export default function ResultsPage() {
               onMouseEnter={e => { if (!loading && inputId.trim()) e.currentTarget.style.backgroundColor = '#EA580C' }}
               onMouseLeave={e => { if (!loading && inputId.trim()) e.currentTarget.style.backgroundColor = '#1A1A1A' }}
             >
-              {loading ? 'Searching...' : 'Find Results'}
+              {loading ? t.results.searchingBtn : t.results.findBtn}
             </button>
           </div>
 
@@ -154,18 +151,24 @@ export default function ResultsPage() {
                 <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
                   {resultMeta.firstName && (
                     <div>
-                      <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>Name</p>
+                      <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>
+                        {t.results.nameMeta}
+                      </p>
                       <p style={{ fontSize: '16px', color: '#1A1A1A', fontFamily: 'Inter, sans-serif' }}>{resultMeta.firstName}</p>
                     </div>
                   )}
                   {resultMeta.department && (
                     <div>
-                      <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>Department</p>
+                      <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>
+                        {t.results.deptMeta}
+                      </p>
                       <p style={{ fontSize: '16px', color: '#1A1A1A', fontFamily: 'Inter, sans-serif' }}>{resultMeta.department}</p>
                     </div>
                   )}
                   <div>
-                    <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>Completed</p>
+                    <p style={{ fontSize: '11px', fontWeight: 500, color: '#6B6B6B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'Inter, sans-serif' }}>
+                      {t.results.completedMeta}
+                    </p>
                     <p style={{ fontSize: '16px', color: '#1A1A1A', fontFamily: 'Inter, sans-serif' }}>
                       {new Date(resultMeta.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
@@ -177,9 +180,14 @@ export default function ResultsPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {results.map(trait => {
                   const color = TRAIT_COLORS[trait.domain] || '#1A1A1A'
-                  const label = TRAIT_LABELS[trait.domain] || trait.title
                   const scorePercent = Math.round((trait.score / (trait.count * 5)) * 100)
                   const isExpanded = expandedTrait === trait.domain
+
+                  const enLabel = translations.en.results.traitLabels[trait.domain]
+                  const csLabel = translations.cs.results.traitLabels[trait.domain]
+                  const label = lang === 'en'
+                    ? `${enLabel} (${csLabel})`
+                    : `${csLabel} (${enLabel})`
 
                   return (
                     <div key={trait.domain}>
@@ -202,14 +210,14 @@ export default function ResultsPage() {
                       </div>
 
                       <p style={{ fontSize: '15px', color: '#6B6B6B', lineHeight: 1.6, marginBottom: '8px', fontFamily: 'Inter, sans-serif' }}>
-                        {trait.shortDescription}
+                        {t.result.traitDescriptions[trait.domain] || trait.shortDescription}
                       </p>
 
                       <button
                         onClick={() => setExpandedTrait(isExpanded ? null : trait.domain)}
                         style={{ fontSize: '13px', color, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
                       >
-                        {isExpanded ? '↑ Hide facets' : '↓ Show facets'}
+                        {isExpanded ? t.results.hideFacets : t.results.showFacets}
                       </button>
 
                       {isExpanded && (
@@ -219,7 +227,11 @@ export default function ResultsPage() {
                             return (
                               <div key={facet.facet}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1A1A1A', fontFamily: 'Inter, sans-serif' }}>{facet.title}</span>
+                                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1A1A1A', fontFamily: 'Inter, sans-serif' }}>
+                                    {lang === 'cs'
+                                      ? `${t.result.facetNames[facet.title] ?? facet.title} (${facet.title})`
+                                      : facet.title}
+                                  </span>
                                   <span style={{ fontSize: '13px', color, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>{facetPercent}</span>
                                 </div>
                                 <div style={{ width: '100%', height: '4px', backgroundColor: '#F5F5F5' }}>

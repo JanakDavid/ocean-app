@@ -3,14 +3,18 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
+import { useTranslation } from '@/lib/useTranslation'
+import { useLanguage } from '@/lib/LanguageContext'
+
+const STAGE_COUNT = 6
 
 // ── Pixel cat ──────────────────────────────────────────────────────────────
-// Single SVG, GPU-only animations. clay orange + bone white only.
 const PixelCat = memo(function PixelCat({
-  boost, onPet,
+  boost, onPet, ariaLabel,
 }: {
   boost: boolean
   onPet: () => void
+  ariaLabel: string
 }) {
   const orange = 'var(--clay)'
   const white  = 'var(--bone)'
@@ -21,7 +25,7 @@ const PixelCat = memo(function PixelCat({
       viewBox="0 0 16 16"
       onClick={onPet}
       role="button"
-      aria-label="Pet the cat to speed things up"
+      aria-label={ariaLabel}
       tabIndex={0}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPet() } }}
     >
@@ -91,17 +95,10 @@ const PixelCat = memo(function PixelCat({
 })
 
 // ── Processing page ────────────────────────────────────────────────────────
-const STAGES = [
-  'Collecting responses…',
-  'Scoring against IPIP-NEO-PI reference cohort…',
-  'Computing five domain percentiles…',
-  'Deriving facet sub-scores…',
-  'Composing your interpretation…',
-  'Generating AI evaluation of your test…',
-]
-
 export default function ProcessingPage() {
   const router = useRouter()
+  const t = useTranslation()
+  const { lang } = useLanguage()
   const [stage, setStage] = useState(0)
   const [done, setDone] = useState(false)
   const [boost, setBoost] = useState(false)
@@ -135,7 +132,7 @@ export default function ProcessingPage() {
     fetch('/api/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers, userData }),
+      body: JSON.stringify({ answers, userData, lang }),
       signal: controller.signal,
     })
       .then(r => r.json())
@@ -146,6 +143,7 @@ export default function ProcessingPage() {
             id: data.id,
             userData,
           }))
+          sessionStorage.setItem('resultLang', lang)
         }
       })
       .catch(err => {
@@ -162,13 +160,13 @@ export default function ProcessingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Animation stage timers
+  // Animation stage timers — count only, display uses t.processing.stages
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = []
-    STAGES.forEach((_, idx) => {
+    for (let idx = 0; idx < STAGE_COUNT; idx++) {
       timers.push(setTimeout(() => setStage(idx), idx * 900))
-    })
-    const totalDuration = STAGES.length * 900 + 400
+    }
+    const totalDuration = STAGE_COUNT * 900 + 400
     timers.push(setTimeout(() => setDone(true), totalDuration))
     timers.push(setTimeout(() => {
       animDone.current = true
@@ -201,7 +199,7 @@ export default function ProcessingPage() {
               padding: '8px 12px', cursor: 'pointer',
             }}
           >
-            <PixelCat boost={boost} onPet={pet} />
+            <PixelCat boost={boost} onPet={pet} ariaLabel={t.processing.catAriaLabel} />
 
             <div style={{ position: 'relative', width: 88, height: 88 }}>
               <svg
@@ -228,7 +226,7 @@ export default function ProcessingPage() {
           </div>
 
           <p className="eyebrow" style={{ marginBottom: 24 }}>
-            {done ? 'Complete' : 'Processing'}
+            {done ? t.processing.completeEyebrow : t.processing.processingEyebrow}
           </p>
 
           <h1 style={{
@@ -237,9 +235,13 @@ export default function ProcessingPage() {
             marginBottom: 32,
           }}>
             {done ? (
-              <>Your profile is ready.</>
+              <>{t.processing.readyH1}</>
             ) : (
-              <>Composing your <span style={{ fontStyle: 'italic', color: 'var(--clay)' }}>profile</span>.</>
+              <>
+                {t.processing.composingH1.pre}{' '}
+                <span style={{ fontStyle: 'italic', color: 'var(--clay)' }}>{t.processing.composingH1.italic}</span>
+                {t.processing.composingH1.post}
+              </>
             )}
           </h1>
 
@@ -254,7 +256,7 @@ export default function ProcessingPage() {
 
           {/* Stage checklist */}
           <ul style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 420, textAlign: 'left' }}>
-            {STAGES.map((s, idx) => {
+            {t.processing.stages.map((s, idx) => {
               const reached  = idx <= stage
               const complete = idx < stage || done
               return (

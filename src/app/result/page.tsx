@@ -7,6 +7,9 @@ import { useRouter } from 'next/navigation'
 import DOMPurify from 'isomorphic-dompurify'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { useTranslation } from '@/lib/useTranslation'
+import { useLanguage } from '@/lib/LanguageContext'
+import { translations } from '@/lib/translations'
 
 const cleanDesc = (text: string) => (text || '').replace(/<br\s*\/?>/gi, ' ').trim()
 
@@ -32,6 +35,8 @@ interface TraitResult {
 
 export default function ResultPage() {
   const router = useRouter()
+  const t = useTranslation()
+  const { lang } = useLanguage()
   const [results, setResults] = useState<TraitResult[]>([])
   const [resultId, setResultId] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState<string>('Profile')
@@ -46,22 +51,21 @@ export default function ResultPage() {
   useEffect(() => {
     async function processResults() {
       try {
-        // Check if processing page already submitted
         const cachedRaw = sessionStorage.getItem('resultData')
+        const storedLang = (sessionStorage.getItem('resultLang') as 'en' | 'cs' | null) ?? lang
         if (cachedRaw) {
           const cached = JSON.parse(cachedRaw)
           setResults(cached.results)
           setResultId(cached.id)
           const name = (cached.userData?.firstName || '').trim()
-          setDisplayName(name || 'Your')
+          setDisplayName(name || t.result.anonymousName)
           setResultDate(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }))
           setLoading(false)
-          // Still fetch AI evaluation
           setAiLoading(true)
           fetch('/api/evaluate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ results: cached.results, firstName: cached.userData?.firstName || null }),
+            body: JSON.stringify({ results: cached.results, firstName: cached.userData?.firstName || null, lang: storedLang }),
           })
             .then(r => r.json())
             .then(evalData => { if (evalData.evaluation) setAiEvaluation(evalData.evaluation) })
@@ -70,7 +74,6 @@ export default function ResultPage() {
           return
         }
 
-        // Fallback: submit from here if processing page was skipped
         const answersRaw = sessionStorage.getItem('testAnswers')
         const userDataRaw = sessionStorage.getItem('userData')
         if (!answersRaw) { router.push('/test'); return }
@@ -79,7 +82,7 @@ export default function ResultPage() {
         const userData = userDataRaw ? JSON.parse(userDataRaw) : {}
 
         const name = (userData?.firstName || '').trim()
-        setDisplayName(name || 'Your')
+        setDisplayName(name || t.result.anonymousName)
         setResultDate(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }))
 
         const response = await fetch('/api/submit', {
@@ -88,7 +91,7 @@ export default function ResultPage() {
           body: JSON.stringify({ answers, userData }),
         })
         const data = await response.json()
-        if (data.error) { setError('Something went wrong processing your results.'); return }
+        if (data.error) { setError(t.result.error); return }
 
         setResults(data.results)
         setResultId(data.id)
@@ -96,7 +99,7 @@ export default function ResultPage() {
         fetch('/api/evaluate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ results: data.results, firstName: userData?.firstName || null }),
+          body: JSON.stringify({ results: data.results, firstName: userData?.firstName || null, lang }),
         })
           .then(r => r.json())
           .then(evalData => { if (evalData.evaluation) setAiEvaluation(evalData.evaluation) })
@@ -104,12 +107,13 @@ export default function ResultPage() {
           .finally(() => setAiLoading(false))
       } catch (err) {
         console.error('Error processing results:', err)
-        setError('Something went wrong processing your results.')
+        setError(t.result.error)
       } finally {
         setLoading(false)
       }
     }
     processResults()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
   const handleCopy = () => {
@@ -130,7 +134,7 @@ export default function ResultPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <p style={{ fontFamily: 'var(--serif)', fontSize: 28, color: 'var(--ink-3)', fontStyle: 'italic' }}>
-            Calculating your profile…
+            {t.result.loading}
           </p>
         </main>
       </>
@@ -162,13 +166,14 @@ export default function ResultPage() {
         padding: 'clamp(64px, 10vh, 128px) clamp(24px, 6vw, 96px) 64px',
         maxWidth: 960, margin: '0 auto',
       }}>
-        <p className="eyebrow" style={{ marginBottom: 24 }}>Your result · {resultDate}</p>
+        <p className="eyebrow" style={{ marginBottom: 24 }}>
+          {t.result.eyebrow.replace('{date}', resultDate)}
+        </p>
         <h1 className="display" style={{ fontSize: 'clamp(56px, 8vw, 128px)' }}>
           {displayName}.
         </h1>
         <p className="body-lg" style={{ marginTop: 32, maxWidth: 560 }}>
-          Five domain scores against the IPIP-NEO-PI reference cohort.
-          Read each number as a percentile — 50 is exactly average.
+          {t.result.body}
         </p>
       </section>
 
@@ -180,6 +185,12 @@ export default function ResultPage() {
             const color = `var(--trait-${domain})`
             const scorePercent = Math.round((trait.score / (trait.count * 5)) * 100)
             const open = openTrait === domain
+
+            const enName = translations.en.result.traitNames[domain]
+            const csName = translations.cs.result.traitNames[domain]
+            const traitDisplayName = lang === 'en'
+              ? `${enName} (${csName})`
+              : `${csName} (${enName})`
 
             return (
               <div key={domain} style={{ borderBottom: '1px solid var(--hairline)', padding: '36px 0' }}>
@@ -195,7 +206,7 @@ export default function ResultPage() {
                     }}>
                       {domain}
                     </span>
-                    <span className="h3" style={{ fontWeight: 500 }}>{trait.title}</span>
+                    <span className="h3" style={{ fontWeight: 500 }}>{traitDisplayName}</span>
                   </div>
                   <span style={{ fontFamily: 'var(--serif)', fontSize: 44, lineHeight: 1, color, fontWeight: 600 }}>
                     {scorePercent}
@@ -208,10 +219,16 @@ export default function ResultPage() {
                 </div>
 
                 {/* Description */}
-                <p
-                  style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.55, marginBottom: 16, maxWidth: 760 }}
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanDesc(trait.description || trait.shortDescription || '')) }}
-                />
+                {t.result.traitDescriptions[domain] ? (
+                  <p style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.55, marginBottom: 16, maxWidth: 760 }}>
+                    {t.result.traitDescriptions[domain]}
+                  </p>
+                ) : (
+                  <p
+                    style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.55, marginBottom: 16, maxWidth: 760 }}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanDesc(trait.description || trait.shortDescription || '')) }}
+                  />
+                )}
 
                 {/* Toggle */}
                 <button
@@ -228,7 +245,7 @@ export default function ResultPage() {
                     transform: open ? 'rotate(0deg)' : 'rotate(180deg)',
                     transition: 'transform 150ms ease',
                   }}>↑</span>
-                  {open ? 'Hide facets' : 'Show facets'}
+                  {open ? t.result.hideFacets : t.result.showFacets}
                 </button>
 
                 {/* Facet dropdown */}
@@ -249,7 +266,11 @@ export default function ResultPage() {
                             display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, alignItems: 'baseline',
                             marginBottom: 8,
                           }}>
-                            <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink)' }}>{f.title}</span>
+                            <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink)' }}>
+                              {lang === 'cs'
+                                ? `${t.result.facetNames[f.title] ?? f.title} (${f.title})`
+                                : f.title}
+                            </span>
                             <span style={{ fontFamily: 'var(--sans)', fontSize: 14, fontWeight: 600, color }}>
                               {facetPercent}
                             </span>
@@ -271,10 +292,10 @@ export default function ResultPage() {
       {/* Interpretation */}
       <section style={{ padding: '64px clamp(24px, 6vw, 96px) 96px', maxWidth: 760, margin: '0 auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
-          <p className="eyebrow">Interpretation</p>
+          <p className="eyebrow">{t.result.interpretationEyebrow}</p>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <span style={{ width: 6, height: 6, background: 'var(--clay)', borderRadius: '50%' }} />
-            <span className="label" style={{ color: 'var(--ink-3)' }}>Generated by AI</span>
+            <span className="label" style={{ color: 'var(--ink-3)' }}>{t.result.aiLabel}</span>
           </div>
         </div>
 
@@ -294,7 +315,7 @@ export default function ResultPage() {
             lineHeight: 1.5, letterSpacing: '-0.005em', color: 'var(--ink-4)',
             fontStyle: 'italic',
           }}>
-            Generating your interpretation…
+            {t.result.aiLoading}
           </p>
         )}
 
@@ -364,13 +385,13 @@ export default function ResultPage() {
               ),
             }}
           >
-            {DOMPurify.sanitize(aiEvaluation)}
+            {aiEvaluation}
           </ReactMarkdown>
         )}
 
         {!aiLoading && !aiEvaluation && (
           <p style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--ink-4)' }}>
-            AI interpretation could not be generated. Your scores are accurate and complete.
+            {t.result.aiError}
           </p>
         )}
       </section>
@@ -383,15 +404,15 @@ export default function ResultPage() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 24, flexWrap: 'wrap' }}>
             <div>
-              <p className="label" style={{ marginBottom: 10 }}>Result ID</p>
+              <p className="label" style={{ marginBottom: 10 }}>{t.result.resultIdLabel}</p>
               <p className="mono" style={{ fontSize: 13, color: 'var(--ink-2)' }}>{resultId}</p>
             </div>
             <div style={{ display: 'flex', gap: 16 }}>
               <button onClick={handleCopy} className="btn btn--ghost" style={{ padding: '14px 22px', minHeight: 44, fontSize: 13 }}>
-                {copied ? '✓ Copied' : 'Copy ID'}
+                {copied ? t.result.copiedBtn : t.result.copyBtn}
               </button>
               <button onClick={() => window.print()} className="btn" style={{ padding: '14px 22px', minHeight: 44, fontSize: 13 }}>
-                Download PDF <span className="arrow" />
+                {t.result.downloadBtn} <span className="arrow" />
               </button>
             </div>
           </div>

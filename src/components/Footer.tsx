@@ -1,6 +1,11 @@
+'use client'
+
 import { Logomark } from './Navbar'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function Footer() {
+  const t = useTranslation()
+
   return (
     <footer style={{
       marginTop: 128,
@@ -11,9 +16,9 @@ export default function Footer() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <Logomark size={14} />
-        <span>OCEAN Instrument</span>
+        <span>{t.footer.brand}</span>
       </div>
-      <span>© 2026 · Built on open science</span>
+      <span>{t.footer.copyright}</span>
     </footer>
   )
 }
