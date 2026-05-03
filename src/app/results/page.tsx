@@ -41,8 +41,15 @@ export default function ResultsPage() {
   const [resultMeta, setResultMeta] = useState<{ id: string; firstName?: string; department?: string; createdAt: string } | null>(null)
   const [expandedTrait, setExpandedTrait] = useState<string | null>(null)
 
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
   const handleSearch = async () => {
     if (!inputId.trim()) return
+
+    if (!UUID_REGEX.test(inputId.trim())) {
+      setError(t.results.notFoundError)
+      return
+    }
 
     setLoading(true)
     setError(null)

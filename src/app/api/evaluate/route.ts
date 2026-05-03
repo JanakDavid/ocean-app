@@ -5,7 +5,48 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 })
 
+const RATE_LIMIT_MAX = 10
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+
+const ipRequestMap = new Map<string, { count: number; resetTime: number }>()
+
+function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown'
+  )
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+
+  // Clean up expired entries
+  for (const [key, entry] of ipRequestMap) {
+    if (now > entry.resetTime) ipRequestMap.delete(key)
+  }
+
+  const entry = ipRequestMap.get(ip)
+  if (!entry || now > entry.resetTime) {
+    ipRequestMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS })
+    return true
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) return false
+
+  entry.count++
+  return true
+}
+
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request)
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 }
+    )
+  }
+
   try {
     const body = await request.json()
     const { results, firstName, lang = 'en' } = body

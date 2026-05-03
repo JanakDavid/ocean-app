@@ -6,6 +6,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -13,6 +15,10 @@ export async function GET(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+    }
+
+    if (!UUID_REGEX.test(id)) {
+      return NextResponse.json({ error: 'Invalid result ID format' }, { status: 400 })
     }
 
     const { data, error } = await supabase
