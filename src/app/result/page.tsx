@@ -159,10 +159,10 @@ export default function ResultPage() {
   // ── Result ────────────────────────────────────────────────────────────────
   return (
     <div className="screen">
-      <Navbar />
+      <Navbar className="no-print" />
 
       {/* Masthead */}
-      <section style={{
+      <section id="masthead" style={{
         padding: 'clamp(64px, 10vh, 128px) clamp(24px, 6vw, 96px) 64px',
         maxWidth: 960, margin: '0 auto',
       }}>
@@ -407,7 +407,7 @@ export default function ResultPage() {
               <p className="label" style={{ marginBottom: 10 }}>{t.result.resultIdLabel}</p>
               <p className="mono" style={{ fontSize: 13, color: 'var(--ink-2)' }}>{resultId}</p>
             </div>
-            <div style={{ display: 'flex', gap: 16 }}>
+            <div className="no-print" style={{ display: 'flex', gap: 16 }}>
               <button onClick={handleCopy} className="btn btn--ghost" style={{ padding: '14px 22px', minHeight: 44, fontSize: 13 }}>
                 {copied ? t.result.copiedBtn : t.result.copyBtn}
               </button>
@@ -419,7 +419,7 @@ export default function ResultPage() {
         </section>
       )}
 
-      <Footer />
+      <Footer className="no-print" />
     </div>
   )
 }

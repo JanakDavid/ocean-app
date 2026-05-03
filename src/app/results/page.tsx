@@ -78,7 +78,7 @@ export default function ResultsPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar className="no-print" />
       <main style={{ backgroundColor: '#FAFAF8', minHeight: '100vh', padding: '64px 24px' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
 

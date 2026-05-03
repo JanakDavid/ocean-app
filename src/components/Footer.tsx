@@ -3,11 +3,11 @@
 import { Logomark } from './Navbar'
 import { useTranslation } from '@/lib/useTranslation'
 
-export default function Footer() {
+export default function Footer({ className }: { className?: string }) {
   const t = useTranslation()
 
   return (
-    <footer style={{
+    <footer className={className} style={{
       marginTop: 128,
       padding: '40px clamp(24px, 4vw, 48px)',
       borderTop: '1px solid var(--hairline)',

@@ -23,12 +23,12 @@ const NAV_ITEMS = [
   { href: '/results', key: 'viewResult' as const, match: (p: string) => p.startsWith('/result') },
 ]
 
-export default function Navbar() {
+export default function Navbar({ className }: { className?: string }) {
   const pathname = usePathname()
   const t = useTranslation()
 
   return (
-    <nav style={{
+    <nav className={className} style={{
       position: 'sticky', top: 0, zIndex: 40,
       background: 'var(--bone)',
       padding: '0 clamp(24px, 4vw, 48px)',

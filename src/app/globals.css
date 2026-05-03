@@ -284,3 +284,46 @@ html, body {
 input, textarea, select {
   border-radius: 0 !important;
 }
+
+@media print {
+  nav, .navbar, footer, .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main, .screen {
+    background: white !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  section {
+    break-inside: avoid;
+  }
+
+  #masthead {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  #masthead .display {
+    font-size: 48px !important;
+    margin-bottom: 8px !important;
+  }
+
+  #masthead .eyebrow {
+    margin-bottom: 8px !important;
+  }
+
+  .trait-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
