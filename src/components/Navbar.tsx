@@ -37,7 +37,7 @@ export default function Navbar({ className }: { className?: string }) {
     }}>
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
         <Logomark size={18} />
-        <span style={{ fontFamily: 'var(--sans)', fontWeight: 500, fontSize: 14, color: 'var(--ink)' }}>
+        <span style={{ fontFamily: 'var(--sans)', fontWeight: 500, fontSize: 15, color: 'var(--ink)' }}>
           {t.nav.brand}
         </span>
       </Link>
@@ -46,7 +46,7 @@ export default function Navbar({ className }: { className?: string }) {
           const active = item.match(pathname)
           return (
             <Link key={item.href} href={item.href} style={{
-              fontFamily: 'var(--sans)', fontSize: 13,
+              fontFamily: 'var(--sans)', fontSize: 15,
               color: active ? 'var(--ink)' : 'var(--ink-3)',
               fontWeight: active ? 500 : 400,
               textDecoration: 'none',

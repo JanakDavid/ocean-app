@@ -316,7 +316,8 @@ export default function QuestionsPage() {
                   background: active ? 'var(--ink)' : 'transparent',
                   color: active ? 'var(--bone)' : 'var(--ink)',
                   cursor: 'pointer',
-                  fontFamily: 'var(--sans)', fontSize: 13,
+                  fontFamily: 'var(--sans)', fontSize: 15,
+                  minHeight: 48,
                   transition: 'all 150ms ease',
                   borderRadius: 0,
                 }}
@@ -329,7 +330,7 @@ export default function QuestionsPage() {
             })}
           </div>
 
-          <p style={{ marginTop: 16, textAlign: 'center', color: 'var(--ink-4)', fontSize: 12 }}>
+          <p style={{ marginTop: 16, textAlign: 'center', color: 'var(--ink-4)', fontSize: 13 }}>
             {t.test.pressHint}
           </p>
 

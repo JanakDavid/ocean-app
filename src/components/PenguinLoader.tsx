@@ -62,69 +62,64 @@ export default function PenguinLoader({ label }: PenguinLoaderProps) {
           className={`pixel-penguin${boosted ? ' boost' : ''}`}
           width="64" height="64"
           viewBox="0 0 16 16"
+          style={{ imageRendering: 'pixelated' as never, shapeRendering: 'crispEdges' }}
         >
-          {/* ── Black body ── */}
-          <g fill={ink}>
-            {/* Head */}
-            <rect x="5" y="1" width="6" height="1" />
-            <rect x="4" y="2" width="8" height="1" />
-            <rect x="3" y="3" width="10" height="3" />
-            {/* Body */}
-            <rect x="2" y="6" width="12" height="6" />
-            <rect x="3" y="12" width="10" height="1" />
-            <rect x="4" y="13" width="7" height="1" />
+          {/* Tail (wagging) */}
+          <g className="penguin-tail" fill={ink}>
+            <rect x="1" y="9" width="1" height="2" />
+            <rect x="2" y="11" width="1" height="1" />
           </g>
 
-          {/* ── Cream face patch + belly ── */}
+          {/* Body silhouette - round and chubby */}
+          <g fill={ink}>
+            <rect x="4" y="0" width="6" height="1" />
+            <rect x="3" y="1" width="8" height="1" />
+            <rect x="2" y="2" width="10" height="5" />
+            <rect x="2" y="7" width="10" height="5" />
+            <rect x="3" y="12" width="8" height="1" />
+            <rect x="4" y="13" width="6" height="1" />
+          </g>
+
+          {/* Belly + face - large white oval */}
           <g fill={bone}>
-            {/* Face (cream oval within black head) */}
-            <rect x="5" y="3" width="6" height="2" />
-            <rect x="6" y="5" width="4" height="1" />
-            {/* Belly */}
-            <rect x="5" y="6" width="6" height="1" />
-            <rect x="4" y="7" width="8" height="4" />
-            <rect x="5" y="11" width="6" height="2" />
+            <rect x="4" y="3" width="6" height="1" />
+            <rect x="3" y="4" width="8" height="3" />
+            <rect x="4" y="7" width="6" height="5" />
+            <rect x="5" y="12" width="4" height="1" />
           </g>
 
-          {/* ── Eyes: black pupils that blink ── */}
-          <rect className="penguin-eye" x="5" y="3" width="2" height="2" fill={ink} />
-          <rect className="penguin-eye" x="9" y="3" width="2" height="2" fill={ink} />
-          {/* White highlight dots */}
-          <rect x="6"  y="3" width="1" height="1" fill="white" />
-          <rect x="10" y="3" width="1" height="1" fill="white" />
-
-          {/* ── Beak ── */}
-          <rect x="7" y="5" width="2" height="2" fill={solar} />
-
-          {/* ── Blush ── */}
-          <rect x="5" y="4" width="1" height="1" fill={clay} opacity="0.6" />
-          <rect x="10" y="4" width="1" height="1" fill={clay} opacity="0.6" />
-
-          {/* ── Tail (wagging) ── */}
-          <g className="penguin-tail">
-            <rect x="12" y="9"  width="2" height="1" fill={ink} />
-            <rect x="13" y="8"  width="2" height="1" fill={ink} />
-            <rect x="13" y="10" width="2" height="1" fill={ink} />
-          </g>
-
-          {/* ── Left flipper (static) ── */}
+          {/* Big sparkly eyes */}
           <g fill={ink}>
-            <rect x="2" y="6" width="1" height="5" />
-            <rect x="1" y="7" width="1" height="4" />
+            <rect className="penguin-eye" x="4" y="4" width="2" height="2" />
+            <rect className="penguin-eye" x="8" y="4" width="2" height="2" />
+          </g>
+          <g fill="white">
+            <rect x="5" y="4" width="1" height="1" />
+            <rect x="9" y="4" width="1" height="1" />
           </g>
 
-          {/* ── Right flipper (boosts upward) ── */}
-          <g className="penguin-flipper" fill={ink}>
-            <rect x="13" y="6" width="1" height="5" />
-            <rect x="14" y="7" width="1" height="4" />
+          {/* Blush */}
+          <g fill={clay} opacity="0.7">
+            <rect x="3" y="6" width="1" height="1" />
+            <rect x="10" y="6" width="1" height="1" />
           </g>
 
-          {/* ── Feet ── */}
+          {/* Beak */}
+          <rect x="7" y="6" width="2" height="1" fill={solar} />
+
+          {/* Feet */}
           <g fill={solar}>
-            <rect x="5"  y="14" width="3" height="1" />
-            <rect x="4"  y="15" width="4" height="1" />
-            <rect x="9"  y="14" width="3" height="1" />
-            <rect x="9"  y="15" width="4" height="1" />
+            <rect x="3" y="14" width="3" height="1" />
+            <rect x="8" y="14" width="3" height="1" />
+            <rect x="3" y="15" width="2" height="1" />
+            <rect x="9" y="15" width="2" height="1" />
+          </g>
+
+          {/* Front flipper - swings up on boost */}
+          <g className="penguin-flipper" fill={ink}>
+            <rect x="11" y="7" width="1" height="3" />
+            <rect x="12" y="8" width="1" height="2" />
+            <rect x="12" y="10" width="1" height="1" opacity="0.85" />
           </g>
         </svg>
 

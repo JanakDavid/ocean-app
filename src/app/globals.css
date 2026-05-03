@@ -277,6 +277,7 @@ html, body {
 /* Pixel penguin */
 .pixel-penguin {
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
   shape-rendering: crispEdges;
   cursor: pointer;
   user-select: none;
