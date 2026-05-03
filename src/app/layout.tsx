@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
-import { Instrument_Serif, Inter, JetBrains_Mono } from 'next/font/google'
+import { Source_Serif_4, DM_Sans, JetBrains_Mono } from 'next/font/google'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import './globals.css'
 
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
+const sourceSerif4 = Source_Serif_4({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '600'],
   style: ['normal', 'italic'],
   variable: '--font-serif',
   display: 'swap',
 })
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
+const dmSans = DM_Sans({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500'],
   variable: '--font-sans',
   display: 'swap',
 })
@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${sourceSerif4.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
       <body><LanguageProvider>{children}</LanguageProvider></body>
     </html>
   )

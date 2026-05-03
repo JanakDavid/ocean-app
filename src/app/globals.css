@@ -26,8 +26,8 @@
   --trait-N: var(--plum);
 
   /* Type */
-  --sans: 'Inter', -apple-system, system-ui, sans-serif;
-  --serif: 'Instrument Serif', 'GT Sectra', 'Times New Roman', serif;
+  --sans: 'DM Sans', -apple-system, system-ui, sans-serif;
+  --serif: 'Source Serif 4', 'Georgia', serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* Scale (8pt) */
@@ -273,6 +273,54 @@ html, body {
   .pixel-cat .cat-eye,
   .pixel-cat.boost .cat-paw { animation: none; }
 }
+
+/* Pixel penguin */
+.pixel-penguin {
+  image-rendering: pixelated;
+  shape-rendering: crispEdges;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.pixel-penguin .penguin-tail {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: penguin-tail-wag 1.6s ease-in-out infinite;
+  will-change: transform;
+}
+.pixel-penguin.boost .penguin-tail {
+  animation-duration: 0.4s;
+}
+.pixel-penguin .penguin-eye {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: penguin-blink 4.8s steps(1, end) infinite;
+}
+.pixel-penguin .penguin-flipper {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+.pixel-penguin.boost .penguin-flipper {
+  animation: penguin-flipper-tap 0.5s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes penguin-tail-wag {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(6deg); }
+}
+@keyframes penguin-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  94%, 96%      { transform: scaleY(0.1); }
+}
+@keyframes penguin-flipper-tap {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50%      { transform: rotate(-28deg) translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixel-penguin .penguin-tail,
+  .pixel-penguin .penguin-eye,
+  .pixel-penguin.boost .penguin-flipper { animation: none; }
+}
 @import "./design-tokens.css";
 
 
@@ -283,6 +331,28 @@ html, body {
 /* Remove all border-radius globally — Bauhaus sharp corners */
 input, textarea, select {
   border-radius: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .dimension-row {
+    grid-template-columns: 48px 1fr !important;
+    gap: 16px !important;
+  }
+
+  .dimension-gloss {
+    grid-column: 1 / -1;
+    padding-left: 64px;
+    margin-top: -8px;
+  }
+
+  .closing-section {
+    text-align: left !important;
+  }
+
+  .screen > section {
+    padding-left: clamp(20px, 5vw, 48px) !important;
+    padding-right: clamp(20px, 5vw, 48px) !important;
+  }
 }
 
 @media print {

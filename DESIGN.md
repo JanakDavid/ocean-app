@@ -57,21 +57,22 @@ Swiss International Style, Dieter Rams.
 ## 3. Typography Rules
 
 ### Type Scale
-| Element     | Font    | Size  | Weight | Letter Spacing | Case      |
-|-------------|---------|-------|--------|----------------|-----------|
-| Display H1  | Inter   | 56px  | 700    | -0.02em        | Sentence  |
-| H1          | Inter   | 48px  | 700    | -0.01em        | Sentence  |
-| H2          | Inter   | 32px  | 600    | 0              | Sentence  |
-| H3          | Inter   | 24px  | 600    | 0              | Sentence  |
-| Body Large  | Inter   | 18px  | 400    | 0              | Sentence  |
-| Body        | Inter   | 16px  | 400    | 0              | Sentence  |
-| Label       | Inter   | 12px  | 500    | 0.08em         | UPPERCASE |
-| Button      | Inter   | 16px  | 500    | 0.01em         | Sentence  |
-| Caption     | Inter   | 14px  | 400    | 0              | Sentence  |
-| Mono/ID     | JetBrains Mono | 14px | 500 | 0.05em      | Uppercase |
+| Element     | Font             | Size  | Weight | Letter Spacing | Case      |
+|-------------|------------------|-------|--------|----------------|-----------|
+| Display H1  | Source Serif 4   | 56px  | 400    | -0.03em        | Sentence  |
+| H1          | Source Serif 4   | 48px  | 400    | -0.02em        | Sentence  |
+| H2          | DM Sans          | 32px  | 500    | -0.01em        | Sentence  |
+| H3          | DM Sans          | 20px  | 500    | -0.005em       | Sentence  |
+| Body Large  | DM Sans          | 20px  | 400    | -0.01em        | Sentence  |
+| Body        | DM Sans          | 16px  | 400    | 0              | Sentence  |
+| Label       | DM Sans          | 11px  | 500    | 0.18em         | UPPERCASE |
+| Button      | DM Sans          | 15px  | 500    | 0.01em         | Sentence  |
+| Caption     | DM Sans          | 13px  | 400    | 0              | Sentence  |
+| Mono/ID     | JetBrains Mono   | 14px  | 500    | 0.04em         | Uppercase |
 
 ### Typography Rules
-- Primary font: Inter (fallback: -apple-system, system-ui, sans-serif)
+- Heading / display font: Source Serif 4 — weights 400 (regular) and 600 (semibold), with italic. Supports latin-ext (Czech diacritics).
+- UI / body font: DM Sans — weights 400 and 500. Used for all labels, buttons, captions, body text.
 - Monospace font: JetBrains Mono — used ONLY for UUID result IDs
 - Never more than 3 type sizes on one screen
 - Labels above inputs: always uppercase, letter-spacing 0.08em

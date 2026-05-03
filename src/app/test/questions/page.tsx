@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { questionHints } from '@/lib/questionHints'
@@ -8,6 +8,9 @@ import { questionHintsCz } from '@/lib/questionHintsCz'
 import { useTranslation } from '@/lib/useTranslation'
 import { useLanguage } from '@/lib/LanguageContext'
 import czechQuestionsData from '@/lib/czechQuestions.json'
+
+const PROGRESS_KEY = 'ocean-test-progress'
+const PROGRESS_TTL = 24 * 60 * 60 * 1000 // 24 hours
 
 interface Choice {
   text: string
@@ -44,6 +47,9 @@ export default function QuestionsPage() {
   const [answers, setAnswers] = useState<Record<string, Answer>>({})
   const [currentPage, setCurrentPage] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [resumePrompt, setResumePrompt] = useState<{ count: number } | null>(null)
+  const savedProgress = useRef<{ answers: Record<string, Answer>; currentQuestion: number } | null>(null)
+  const promptDismissed = useRef(false)
 
   useEffect(() => {
     async function loadQuestions() {
@@ -65,6 +71,41 @@ export default function QuestionsPage() {
     loadQuestions()
   }, [])
 
+  // Check for saved progress once questions are loaded
+  useEffect(() => {
+    if (questions.length === 0) return
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY)
+      if (!raw) { promptDismissed.current = true; return }
+      const parsed = JSON.parse(raw)
+      if (Date.now() - parsed.timestamp > PROGRESS_TTL) {
+        localStorage.removeItem(PROGRESS_KEY)
+        promptDismissed.current = true
+        return
+      }
+      const count = Object.keys(parsed.answers || {}).length
+      if (count > 0) {
+        savedProgress.current = { answers: parsed.answers, currentQuestion: parsed.currentQuestion ?? 0 }
+        setResumePrompt({ count })
+      } else {
+        promptDismissed.current = true
+      }
+    } catch {
+      localStorage.removeItem(PROGRESS_KEY)
+      promptDismissed.current = true
+    }
+  }, [questions])
+
+  // Save progress on every answer change (after prompt is dismissed)
+  useEffect(() => {
+    if (!promptDismissed.current || Object.keys(answers).length === 0) return
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      answers,
+      currentQuestion: currentPage,
+      timestamp: Date.now(),
+    }))
+  }, [answers, currentPage])
+
   const total = questions.length
   const question = questions[currentPage]
   const displayedIdx = currentPage + 1
@@ -79,7 +120,24 @@ export default function QuestionsPage() {
     }))
   }
 
+  const handleContinue = () => {
+    if (savedProgress.current) {
+      setAnswers(savedProgress.current.answers)
+      setCurrentPage(savedProgress.current.currentQuestion)
+    }
+    promptDismissed.current = true
+    setResumePrompt(null)
+  }
+
+  const handleStartFresh = () => {
+    localStorage.removeItem(PROGRESS_KEY)
+    savedProgress.current = null
+    promptDismissed.current = true
+    setResumePrompt(null)
+  }
+
   const handleFinish = () => {
+    localStorage.removeItem(PROGRESS_KEY)
     const answerArray = Object.values(answers).map(a => ({
       domain: a.domain,
       facet: a.facet,
@@ -134,9 +192,50 @@ export default function QuestionsPage() {
     )
   }
 
-  if (!question) return null
+  if (!question && !resumePrompt) return null
 
-  const czechText = lang === 'cs' ? (czechMap[question.id] ?? null) : null
+  const czechText = question && lang === 'cs' ? (czechMap[question.id] ?? null) : null
+
+  // Resume prompt overlay
+  if (resumePrompt) {
+    return (
+      <div className="screen">
+        <Navbar />
+        <div style={{
+          minHeight: 'calc(100vh - 72px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 'clamp(48px, 8vh, 96px) clamp(24px, 6vw, 96px)',
+        }}>
+          <div style={{ maxWidth: 560, width: '100%' }}>
+            <p className="eyebrow" style={{ marginBottom: 32 }}>
+              {lang === 'cs' ? 'Nedokončený test' : 'Unfinished test'}
+            </p>
+            <p style={{
+              fontFamily: 'var(--serif)', fontSize: 'clamp(28px, 4vw, 44px)',
+              lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--ink)', marginBottom: 24,
+            }}>
+              {lang === 'cs'
+                ? <>Máte rozdělaný postup — {resumePrompt.count}/120 otázek.</>
+                : <>You have unfinished progress — {resumePrompt.count}/120 questions.</>}
+            </p>
+            <p style={{ fontSize: 15, color: 'var(--ink-3)', lineHeight: 1.6, marginBottom: 48 }}>
+              {lang === 'cs'
+                ? 'Chcete pokračovat tam, kde jste skončili?'
+                : 'Would you like to continue where you left off?'}
+            </p>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <button className="btn" onClick={handleContinue}>
+                {lang === 'cs' ? 'Pokračovat' : 'Continue'} <span className="arrow" />
+              </button>
+              <button className="btn btn--ghost" onClick={handleStartFresh}>
+                {lang === 'cs' ? 'Začít znovu' : 'Start fresh'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="screen">
