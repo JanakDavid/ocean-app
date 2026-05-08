@@ -16,6 +16,7 @@ interface Translations {
   footer: {
     brand: string
     copyright: string
+    privacyLink: string
   }
   landing: {
     eyebrow: string
@@ -39,6 +40,10 @@ interface Translations {
     }
     beginBtn: string
     skipBtn: string
+    consent: {
+      text: string
+      linkText: string
+    }
   }
   test: {
     consider: string
@@ -76,6 +81,7 @@ interface Translations {
     traitNames: Record<string, string>
     traitDescriptions: Record<string, string>
     facetNames: Record<string, string>
+    hiringDisclaimer: string
   }
   results: {
     viewResultsEyebrow: string
@@ -93,6 +99,12 @@ interface Translations {
     showFacets: string
     traitLabels: Record<string, string>
   }
+  privacy: {
+    eyebrow: string
+    h1: string
+    lastUpdated: string
+    sections: Array<{ title: string; body: string }>
+  }
 }
 
 const en: Translations = {
@@ -105,6 +117,7 @@ const en: Translations = {
   footer: {
     brand: 'OCEAN Instrument',
     copyright: '© 2026 · Built on open science',
+    privacyLink: 'Privacy Policy',
   },
   landing: {
     eyebrow: 'A behavioural instrument · 2026',
@@ -134,6 +147,10 @@ const en: Translations = {
     },
     beginBtn: 'Begin · 120 items',
     skipBtn: 'Skip — stay anonymous',
+    consent: {
+      text: 'I consent to my responses being processed and stored for up to 3 years to generate my personality profile. I can request deletion at any time.',
+      linkText: 'Privacy Policy',
+    },
   },
   test: {
     consider: 'Consider',
@@ -221,6 +238,7 @@ const en: Translations = {
       'Intellect': 'Intellect',
       'Liberalism': 'Liberalism',
     },
+    hiringDisclaimer: 'This assessment is for informational and educational purposes only. It should not be used as the sole basis for hiring, promotion, or any employment-related decisions. Personality profiles are one of many tools for self-awareness, not definitive judgments.',
   },
   results: {
     viewResultsEyebrow: 'View Results',
@@ -244,6 +262,49 @@ const en: Translations = {
       N: 'Neuroticism',
     },
   },
+  privacy: {
+    eyebrow: 'Legal · Privacy',
+    h1: 'Privacy Policy',
+    lastUpdated: 'Last updated: May 2026',
+    sections: [
+      {
+        title: 'About this project',
+        body: 'This assessment platform is a personal portfolio project by David Janak. It is not operated by a commercial company.',
+      },
+      {
+        title: 'What data we collect',
+        body: 'When you complete the test, we collect: your 120 Likert-scale responses, your optional first name, optional department, and optional email address, a timestamp, your computed personality domain scores, and an AI-generated interpretation of your profile. No other personal data is collected.',
+      },
+      {
+        title: 'Where data is stored',
+        body: 'Your results are stored in a PostgreSQL database provided by Supabase, hosted in Zurich, Switzerland (European Union). All data remains within the EU.',
+      },
+      {
+        title: 'Cookies and local storage',
+        body: 'This site does not use cookies. Your language preference and test progress are stored only in your browser\'s localStorage and are never transmitted to our servers.',
+      },
+      {
+        title: 'Third-party services',
+        body: 'Your personality scores and (optionally) your first name are sent to Anthropic\'s Claude API to generate a personalised interpretation. This data is transmitted securely and is not stored by Anthropic beyond the duration of the API request. No third-party tracking, analytics, or advertising services are used.',
+      },
+      {
+        title: 'Data retention',
+        body: 'Your results are stored for up to 3 years from the date of completion and are then automatically deleted. You may request earlier deletion at any time.',
+      },
+      {
+        title: 'Your rights (GDPR)',
+        body: 'Under the General Data Protection Regulation (GDPR), you have the right to access your data, have it corrected or deleted, restrict its processing, and receive it in a portable format. To exercise any of these rights, contact david.janak12@gmail.com quoting your result UUID. We will respond within 30 days.',
+      },
+      {
+        title: 'Anonymous by default',
+        body: 'Results are identified by a randomly generated UUID only. Unless you voluntarily provide a name, department, or email address, your results cannot be linked to your identity.',
+      },
+      {
+        title: 'Purpose',
+        body: 'This assessment is for informational and educational purposes only. It is not a clinical assessment and should not be used as the sole basis for hiring, promotion, or any employment-related decision.',
+      },
+    ],
+  },
 }
 
 const cs: Translations = {
@@ -256,6 +317,7 @@ const cs: Translations = {
   footer: {
     brand: 'OCEAN Instrument',
     copyright: '© 2026 · Postaveno na otevřené vědě',
+    privacyLink: 'Ochrana osobních údajů',
   },
   landing: {
     eyebrow: 'Behaviorální nástroj · 2026',
@@ -285,6 +347,10 @@ const cs: Translations = {
     },
     beginBtn: 'Začít · 120 položek',
     skipBtn: 'Přeskočit — zůstat anonymní',
+    consent: {
+      text: 'Souhlasím se zpracováním a uložením mých odpovědí po dobu až 3 let za účelem vytvoření osobnostního profilu. Mohu kdykoliv požádat o smazání.',
+      linkText: 'Ochrana osobních údajů',
+    },
   },
   test: {
     consider: 'Zvažte',
@@ -372,6 +438,7 @@ const cs: Translations = {
       'Intellect': 'Intelekt',
       'Liberalism': 'Otevřenost názorům',
     },
+    hiringDisclaimer: 'Toto hodnocení slouží pouze k informačním a vzdělávacím účelům. Nemělo by být používáno jako jediný podklad pro přijímání zaměstnanců, povýšení ani jiná rozhodnutí související se zaměstnáním. Osobnostní profily jsou jedním z mnoha nástrojů sebepoznání, nikoli definitivním hodnocením.',
   },
   results: {
     viewResultsEyebrow: 'Zobrazit výsledky',
@@ -394,6 +461,49 @@ const cs: Translations = {
       A: 'Přívětivost',
       N: 'Neuroticismus',
     },
+  },
+  privacy: {
+    eyebrow: 'Právní · Soukromí',
+    h1: 'Ochrana osobních údajů',
+    lastUpdated: 'Poslední aktualizace: květen 2026',
+    sections: [
+      {
+        title: 'O tomto projektu',
+        body: 'Tato platforma pro hodnocení osobnosti je osobní portfoliový projekt Davida Janáka. Neprovozuje ji žádná komerční společnost.',
+      },
+      {
+        title: 'Jaké údaje shromažďujeme',
+        body: 'Při vyplnění testu shromažďujeme: vašich 120 odpovědí na Likertově škále, vaše volitelné jméno, volitelné oddělení a volitelnou e-mailovou adresu, časové razítko, vypočítané skóre osobnostních dimenzí a interpretaci vašeho profilu generovanou umělou inteligencí. Žádné jiné osobní údaje nejsou shromažďovány.',
+      },
+      {
+        title: 'Kde jsou data uložena',
+        body: 'Vaše výsledky jsou uloženy v databázi PostgreSQL poskytované společností Supabase, hostované v Curychu, Švýcarsko (Evropská unie). Veškerá data zůstávají v EU.',
+      },
+      {
+        title: 'Cookies a lokální úložiště',
+        body: 'Tento web nepoužívá cookies. Vaše jazykové preference a postup v testu jsou uloženy pouze v lokálním úložišti vašeho prohlížeče (localStorage) a nikdy nejsou přenášeny na naše servery.',
+      },
+      {
+        title: 'Služby třetích stran',
+        body: 'Vaše skóre osobnosti a (volitelně) vaše jméno jsou odesílány do Claude API společnosti Anthropic za účelem generování personalizované interpretace. Tato data jsou přenášena bezpečně a společnost Anthropic je neukládá po dobu delší, než je trvání požadavku API. Žádné sledovací nástroje třetích stran, analytické nástroje ani reklamní služby nejsou používány.',
+      },
+      {
+        title: 'Uchování dat',
+        body: 'Vaše výsledky jsou uchovávány po dobu až 3 let od data dokončení a poté jsou automaticky smazány. Smazání můžete kdykoli vyžádat i dříve.',
+      },
+      {
+        title: 'Vaše práva (GDPR)',
+        body: 'Na základě obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup k vašim datům, jejich opravu nebo smazání, omezení jejich zpracování a přenos v přenositelném formátu. Pro uplatnění těchto práv kontaktujte david.janak12@gmail.com s uvedením vašeho UUID výsledku. Odpovíme do 30 dnů.',
+      },
+      {
+        title: 'Anonymní ve výchozím nastavení',
+        body: 'Výsledky jsou identifikovány pouze náhodně generovaným UUID. Pokud dobrovolně neposkytnete jméno, oddělení nebo e-mailovou adresu, nelze vaše výsledky spojit s vaší identitou.',
+      },
+      {
+        title: 'Účel',
+        body: 'Toto hodnocení slouží pouze k informačním a vzdělávacím účelům. Není to klinické posouzení a nemělo by být používáno jako jediný podklad pro přijímání zaměstnanců, povýšení ani jiná rozhodnutí týkající se zaměstnání.',
+      },
+    ],
   },
 }
 

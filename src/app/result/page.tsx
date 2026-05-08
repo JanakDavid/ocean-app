@@ -396,6 +396,16 @@ export default function ResultPage() {
         )}
       </section>
 
+      {/* Hiring disclaimer */}
+      <section style={{
+        padding: '32px clamp(24px, 6vw, 96px)', maxWidth: 720, margin: '0 auto',
+        borderTop: '1px solid var(--hairline)',
+      }}>
+        <p style={{ fontSize: 13, color: 'var(--ink-4)', lineHeight: 1.65 }}>
+          {t.result.hiringDisclaimer}
+        </p>
+      </section>
+
       {/* ID & actions */}
       {resultId && (
         <section style={{

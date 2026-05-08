@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import { useTranslation } from '@/lib/useTranslation'
 
@@ -13,6 +14,7 @@ export default function TestIntroPage() {
     department: '',
     email: '',
   })
+  const [consented, setConsented] = useState(false)
 
   const handleStart = () => {
     sessionStorage.setItem('userData', JSON.stringify(formData))
@@ -69,10 +71,34 @@ export default function TestIntroPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: 72, display: 'flex', alignItems: 'center', gap: 24 }}>
+        {/* GDPR consent */}
+        <label style={{
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          marginTop: 56, cursor: 'pointer',
+        }}>
+          <input
+            type="checkbox"
+            checked={consented}
+            onChange={e => setConsented(e.target.checked)}
+            style={{
+              width: 18, height: 18, flexShrink: 0,
+              marginTop: 2, accentColor: 'var(--ink)',
+              cursor: 'pointer',
+            }}
+          />
+          <span style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.6 }}>
+            {t.form.consent.text}{' '}
+            <Link href="/privacy" style={{ color: 'var(--ink-2)', textUnderlineOffset: 3 }}>
+              {t.form.consent.linkText}
+            </Link>
+          </span>
+        </label>
+
+        <div style={{ marginTop: 32, display: 'flex', alignItems: 'center', gap: 24 }}>
           <button
             className="btn"
             onClick={handleStart}
+            disabled={!consented}
             style={{
               background: 'var(--ink)',
               color: 'var(--bone)',
@@ -81,20 +107,28 @@ export default function TestIntroPage() {
               padding: '20px 32px',
               fontSize: 15,
               fontWeight: 500,
-              cursor: 'pointer',
+              cursor: consented ? 'pointer' : 'not-allowed',
               display: 'inline-flex',
               alignItems: 'center',
               gap: 12,
               minHeight: 56,
+              opacity: consented ? 1 : 0.35,
             }}
           >
             {t.form.beginBtn} <span className="arrow" />
           </button>
-          <button onClick={handleStart} style={{
-            background: 'none', border: 0, cursor: 'pointer', padding: 0,
-            fontSize: 13, color: 'var(--ink-3)',
-            textDecoration: 'underline', textUnderlineOffset: 4,
-          }}>
+          <button
+            onClick={handleStart}
+            disabled={!consented}
+            style={{
+              background: 'none', border: 0,
+              cursor: consented ? 'pointer' : 'not-allowed',
+              padding: 0,
+              fontSize: 13, color: 'var(--ink-3)',
+              textDecoration: 'underline', textUnderlineOffset: 4,
+              opacity: consented ? 1 : 0.35,
+            }}
+          >
             {t.form.skipBtn}
           </button>
         </div>

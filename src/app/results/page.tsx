@@ -257,6 +257,16 @@ export default function ResultsPage() {
           )}
 
         </div>
+
+        {/* Hiring disclaimer */}
+        <div style={{
+          marginTop: 48, paddingTop: 24,
+          borderTop: '1px solid var(--hairline)',
+        }}>
+          <p style={{ fontSize: 13, color: 'var(--ink-4)', lineHeight: 1.65 }}>
+            {t.result.hiringDisclaimer}
+          </p>
+        </div>
       </main>
     </>
   )
