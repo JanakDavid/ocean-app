@@ -5,7 +5,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 })
 
-const RATE_LIMIT_MAX = 10
+const RATE_LIMIT_MAX = 20
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
 
 const ipRequestMap = new Map<string, { count: number; resetTime: number }>()
